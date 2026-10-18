@@ -1,0 +1,10 @@
+{
+  "name": "cdn-visual-plugin",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "CDN 探测器浏览器扩展源码包(用于本地测试与开发)",
+  "scripts": {
+    "test": "node test/detect.test.mjs && node test/i18n.test.mjs"
+  }
+}

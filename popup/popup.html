@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <span class="logo">🛡️</span>
+      <span class="title" data-i18n="popupTitle">🛡️ CDN 探测器</span>
+    </div>
+    <button id="reload" class="icon-btn" data-i18n-tip="reloadTip" title="刷新页面并重新检测">↻</button>
+  </header>
+
+  <section class="card hero">
+    <div id="host" class="host">—</div>
+    <div id="status" class="pill status unknown" data-i18n="statusWaiting">等待数据…</div>
+    <div id="provider" class="provider">—</div>
+    <div class="chips">
+      <span id="chip-pop" class="chip hidden">—</span>
+      <span id="chip-proto" class="chip hidden">h3</span>
+      <span id="chip-nav" class="chip hidden">—</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="sec-title" data-i18n="timingTitle">连接时序</div>
+    <div id="timing-hint" class="hint hidden"></div>
+    <div id="wf" class="wf hidden">
+      <span class="seg seg-dns"></span><span class="seg seg-tcp"></span><span class="seg seg-tls"></span><span class="seg seg-server"></span><span class="seg seg-dl"></span>
+    </div>
+    <div class="grid2">
+      <div class="metric"><div class="lab"><i class="dot c-dns"></i><span data-i18n="dnsTime">DNS 解析</span></div><div class="val"><span id="m-dns">—</span><span class="unit">ms</span></div></div>
+      <div class="metric"><div class="lab"><i class="dot c-tcp"></i><span data-i18n="tcpTime">TCP 握手</span></div><div class="val"><span id="m-tcp">—</span><span class="unit">ms</span></div></div>
+      <div class="metric"><div class="lab"><i class="dot c-tls"></i><span data-i18n="tlsTime">TLS 握手</span></div><div class="val"><span id="m-tls">—</span><span class="unit">ms</span></div></div>
+      <div class="metric"><div class="lab"><i class="dot c-server"></i><span data-i18n="ttfbLabel">首字节 (TTFB)</span></div><div class="val"><span id="m-ttfb">—</span><span class="unit">ms</span></div></div>
+      <div class="metric"><div class="lab"><i class="dot c-dl"></i><span data-i18n="downloadTime">内容下载</span></div><div class="val"><span id="m-dl">—</span><span class="unit">ms</span></div></div>
+      <div class="metric"><div class="lab"><i class="dot c-total"></i><span data-i18n="totalTime">连接合计</span></div><div class="val"><span id="m-total">—</span><span class="unit">ms</span></div></div>
+    </div>
+    <div id="reuse-note" class="hint hidden"></div>
+  </section>
+
+  <section class="card">
+    <div class="sec-head">
+      <div class="sec-title" data-i18n="pingTitle">Ping (HTTP RTT)</div>
+      <button id="ping" class="btn-filled" data-i18n="pingMeasure">测量</button>
+    </div>
+    <div class="ping-main"><span id="ping-med" class="big">—</span><span class="unit">ms</span></div>
+    <div id="ping-wave" class="wave hidden"></div>
+    <div id="ping-chips" class="chips"></div>
+    <div class="hint" data-i18n="pingNote">经 HTTP 往返近似,非 ICMP;预热后取 3 次中位数。</div>
+    <div id="ping-hint" class="hint"></div>
+  </section>
+
+  <section class="card">
+    <div class="sec-title" data-i18n="transferTitle">传输与导航</div>
+    <div class="grid2">
+      <div class="metric"><div class="lab"><span data-i18n="transferLabel">传输大小</span></div><div class="val small"><span id="m-transfer">—</span></div></div>
+      <div class="metric"><div class="lab"><span data-i18n="compressionLabel">压缩比</span></div><div class="val small"><span id="m-compress">—</span></div></div>
+      <div class="metric"><div class="lab"><span data-i18n="browserCache">浏览器缓存</span></div><div class="val small"><span id="m-bcache">—</span></div></div>
+      <div class="metric"><div class="lab"><span data-i18n="cdnCache">CDN 边缘缓存</span></div><div class="val small"><span id="m-ccache">—</span></div></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="sec-title" data-i18n="nodeTitle">节点与 IP</div>
+    <div class="kv"><span data-i18n="rowPop">边缘节点 (POP)</span><b id="pop">—</b></div>
+    <div class="kv"><span data-i18n="rowRegion">节点地区</span><b id="region">—</b></div>
+    <div class="kv"><span data-i18n="rowIp">服务器 IP</span><b id="ip">—</b></div>
+    <div class="kv"><span data-i18n="rowAsn">IP 归属 (ASN)</span><b id="asn">—</b></div>
+    <div id="geo-hint" class="hint"></div>
+    <button id="lookup" class="btn-tonal hidden" style="margin-top:8px" data-i18n="lookup">查询 IP 归属地</button>
+  </section>
+
+  <section class="card">
+    <div class="sec-title" data-i18n="historyTitle">最近检测</div>
+    <div id="history-list"></div>
+  </section>
+
+  <details class="card evidence">
+    <summary data-i18n="evidence">响应头证据</summary>
+    <ul id="evidence"></ul>
+  </details>
+
+  <section class="card settings">
+    <label class="switch-row"><input type="checkbox" id="geo-toggle" /><span data-i18n="geoToggle">使用 ip-api.com 查询 IP 归属地(会把所查节点 IP 发给该第三方)</span></label>
+    <label class="switch-row"><input type="checkbox" id="ping-toggle" /><span data-i18n="pingToggle">测量 Ping(对当前站点发起几个小请求)</span></label>
+    <label class="switch-row"><input type="checkbox" id="overlay-toggle" /><span data-i18n="overlayToggle">在页面上显示 CDN 角标</span></label>
+  </section>
+
+  <footer data-i18n="footer">仅分析主导航的响应头;刷新页面可获取最新结果。</footer>
+
+</div>
+<script type="module" src="popup.js"></script>
+</body>
+</html>
