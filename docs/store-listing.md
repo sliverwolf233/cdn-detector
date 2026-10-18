@@ -33,21 +33,34 @@ CDN 探测器 — CDN·节点地区·连接时序
 查看网站是否由 CDN 保护、命中哪家 CDN、分配到哪个边缘节点(地区),并显示 DNS/TCP/TLS/TTFB 时序与 Ping。
 
 **详细描述**:
-一键查看当前网站背后的 CDN:
+CDN 探测器 —— 一键查看任何网站背后的 CDN。
 
-【CDN 识别】是否接入 CDN;命中 18+ 家厂商(Cloudflare、CloudFront、Fastly、Akamai、Vercel、Azure Front Door、阿里云、腾讯云 EdgeOne、七牛、华为云等),并给出判定依据响应头。
+【CDN 识别】
+显示当前网站是否由 CDN 保护/加速;自动识别 18+ 家厂商:Cloudflare、Amazon CloudFront、Fastly、Akamai、Vercel、Netlify、Azure Front Door、Google Cloud、阿里云、腾讯云 CDN/EdgeOne、七牛云、华为云、金山云、Gcore、CDN77、BFE 等,并展示判定依据的响应头。
 
-【边缘节点】解析 POP 代码显示地区(如 CF-RAY …-HKG → 香港);配合 IP 归属(ASN)交叉印证厂商与所在地。
+【边缘节点与归属】
+解析 POP 代码并显示地区(如 CF-RAY …-HKG → 香港);结合服务器 IP 归属地(城市/运营商/AS 号)交叉印证厂商与位置。
 
-【连接时序】DNS 解析 / TCP 握手 / TLS 握手 / 首字节(TTFB) / 内容下载分段瀑布图;协议版本(h2/h3)、传输大小、压缩比、浏览器缓存与 CDN 边缘缓存命中状态。
+【连接时序】
+主导航真实连接的细分瀑布图:DNS 解析、TCP 握手、TLS 握手、首字节时间(TTFB)、内容下载;另有连接合计、协议版本(h2/h3/HTTP1.1)、传输大小与压缩比。
 
-【Ping】HTTP 往返近似 RTT(3 次取中位数,需说明浏览器无法发 ICMP)。
+【缓存状态】
+浏览器本地缓存命中(基于 Navigation Timing)与 CDN 边缘缓存命中(X-Cache / CF-Cache-Status / Age)一目了然。
 
-【常驻后台】无需打开弹窗:图标角标、页面浮动角标、自动检测与自动 Ping、按站点历史记录,均默认开启且可关闭。
+【Ping / RTT】
+以 HTTP 往返近似测量到该站点的延迟(预热后 3 次取中位数;浏览器扩展无法发送 ICMP,故为近似值,界面已如实标注)。
 
-【多语言】简/繁中文、英、日、韩、俄、法、德、西。
+【常驻后台,无需打开弹窗】
+图标角标显示厂商短名;页面右下角浮动角标(厂商 · 地区 · 延迟);导航后自动检测与自动测量;按站点保存最近 50 条检测历史。
 
-【隐私】检测数据只存本地;IP 归属地查询(走 ip-api.com)与 Ping 测量均可一键关闭;不收集任何个人数据。
+【SPA 友好】
+跟踪单页应用(React/Vue 等)的客户端路由切换,自动刷新记录并按需重测延迟。
+
+【多语言】
+简体/繁体中文、英语、日语、韩语、俄语、法语、德语、西班牙语,共 9 种界面语言。
+
+【隐私】
+不收集任何个人数据;检测结果只存浏览器本地;IP 归属地查询(第三方 ip-api.com)、Ping 测量与页面角标均可一键关闭。
 
 ---
 
@@ -60,14 +73,17 @@ CDN Detector — provider, POP region & timing
 See if a site is behind a CDN, which provider and edge POP region it hits, plus DNS/TCP/TLS/TTFB timing and ping.
 
 **Detailed description**:
-One click to see the CDN behind any website:
+CDN Detector — see the CDN behind any website with one click.
 
-• CDN detection: 18+ providers (Cloudflare, CloudFront, Fastly, Akamai, Vercel, Azure Front Door, Alibaba, Tencent EdgeOne, Qiniu, Huawei and more), with the evidence headers.
-• Edge node: POP code decoded into a region (e.g. CF-RAY …-HKG → Hong Kong), cross-checked via IP owner (ASN).
-• Connection timing: waterfall of DNS / TCP / TLS handshake / TTFB / download; protocol (h2/h3), transfer size, compression, browser cache and CDN edge cache status.
-• Ping: HTTP round-trip approximation (median of 3; ICMP is not available to extensions).
-• Always-on: icon badge, on-page chip, auto detection & ping, per-site history — all optional.
-• 9 languages. All data stays local; IP geolocation and ping can be turned off.
+• CDN detection: shows whether the current site is served by a CDN, identifying 18+ providers (Cloudflare, Amazon CloudFront, Fastly, Akamai, Vercel, Netlify, Azure Front Door, Google Cloud, Alibaba Cloud, Tencent CDN/EdgeOne, Qiniu, Huawei Cloud, Kingsoft, Gcore, CDN77, BFE and more), with the evidence response headers.
+• Edge node & geolocation: POP codes decoded into regions (e.g. CF-RAY …-HKG → Hong Kong), cross-checked with the server IP's city/ISP/ASN.
+• Connection timing: a waterfall of the real main navigation — DNS lookup, TCP handshake, TLS handshake, time to first byte (TTFB) and content download — plus total, protocol (h2/h3/HTTP1.1), transfer size and compression.
+• Cache status: browser local cache hit (Navigation Timing) and CDN edge cache hit (X-Cache / CF-Cache-Status / Age).
+• Ping / RTT: HTTP round-trip approximation to the site (median of 3 after warm-up; ICMP is unavailable to extensions, and the UI says so honestly).
+• Always-on without opening the popup: provider badge on the toolbar icon, an on-page chip (provider · region · latency), automatic detection and measurement after each navigation, and a per-site history of the last 50 checks.
+• SPA-friendly: tracks client-side route changes of single-page apps (React/Vue etc.), refreshing records and re-measuring latency as needed.
+• 9 interface languages: Simplified/Traditional Chinese, English, Japanese, Korean, Russian, French, German, Spanish.
+• Privacy: no personal data is collected; results stay in your browser; IP geolocation (third-party ip-api.com), ping measurement and the on-page chip can each be turned off with one click.
 
 ---
 
