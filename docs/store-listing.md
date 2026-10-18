@@ -13,7 +13,7 @@
 | 简短说明 | 下文「简短描述」 | ≤ 约 132 字符 |
 | 详细说明 | 下文「详细描述」 | 支持简单排版 |
 | 类别 | 开发人员工具 / Developer Tools | |
-| 隐私策略 URL | 托管 docs/privacy-policy.md 后的网址(GitHub Pages 即可) | 必填 |
+| 隐私策略 URL | https://sliverwolf233.github.io/cdn-detector/privacy-policy (GitHub Pages 已开启) | 必填 |
 | 网站 URL(可选) | 你的项目主页或 GitHub 仓库 | |
 | 支持 URL(可选) | GitHub Issues 页面 | |
 | 商店图标 | icons/icon128.png | 128×128 PNG |
