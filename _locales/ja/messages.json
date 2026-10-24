@@ -61,6 +61,7 @@
   "allHeaders": { "message": "すべてのレスポンスヘッダー" },
   "hostsTitle": { "message": "ページのドメイン分布" },
   "hostsMain": { "message": "メインドキュメント" },
+  "offlineHint": { "message": "オフラインDB" },
   "timingNoData": { "message": "タイミングデータなし — 再読み込みで収集します" },
   "reuseNote": { "message": "TCP/TLS が 0 ms の場合、接続の再利用やキャッシュの可能性があります。" },
   "navNavigate": { "message": "直接ナビゲーション" },

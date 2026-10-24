@@ -61,6 +61,7 @@
   "allHeaders": { "message": "All response headers" },
   "hostsTitle": { "message": "Hosts on this page" },
   "hostsMain": { "message": "main document" },
+  "offlineHint": { "message": "offline DB" },
   "timingNoData": { "message": "No timing yet — reload the page to collect" },
   "reuseNote": { "message": "0 ms for TCP/TLS usually means the connection was reused or cached." },
   "navNavigate": { "message": "Navigate" },

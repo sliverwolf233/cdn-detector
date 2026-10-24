@@ -61,6 +61,7 @@
   "allHeaders": { "message": "Alle Antwort-Header" },
   "hostsTitle": { "message": "Domains der Seite" },
   "hostsMain": { "message": "Haupt-Dokument" },
+  "offlineHint": { "message": "Offline-DB" },
   "timingNoData": { "message": "Noch keine Zeitdaten — Seite neu laden" },
   "reuseNote": { "message": "0 ms bei TCP/TLS bedeutet meist eine wiederverwendete Verbindung oder Cache." },
   "navNavigate": { "message": "Direkte Navigation" },

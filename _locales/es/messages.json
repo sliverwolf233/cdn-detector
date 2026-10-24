@@ -61,6 +61,7 @@
   "allHeaders": { "message": "Todas las cabeceras de respuesta" },
   "hostsTitle": { "message": "Dominios de la página" },
   "hostsMain": { "message": "documento principal" },
+  "offlineHint": { "message": "BD sin conexión" },
   "timingNoData": { "message": "Aún sin datos de tiempos — recarga la página" },
   "reuseNote": { "message": "0 ms en TCP/TLS suele indicar conexión reutilizada o caché." },
   "navNavigate": { "message": "Navegación directa" },

@@ -71,7 +71,8 @@ const FALLBACK = {
   "copied": "已复制",
   "allHeaders": "全部响应头",
   "hostsTitle": "页面域名分布",
-  "hostsMain": "主文档"
+  "hostsMain": "主文档",
+  "offlineHint": "离线库"
 };
 
 const hasChrome = typeof chrome !== "undefined" && chrome.storage && chrome.tabs;
@@ -121,6 +122,8 @@ const DEMO_RECORD = {
     isp: "Cloudflare, Inc.", org: "CLOUDFLARENET", as: "AS13335 Cloudflare, Inc."
   },
   asnCdnHint: null,
+  asnName: "Cloudflare",
+  infra: null,
   geoError: null,
   timing: {
     navType: "navigate", protocol: "h3",
@@ -214,11 +217,16 @@ function regionText(record) {
 }
 function asnText(record) {
   const g = record && record.geo;
-  if (!g) return "—";
-  const parts = [];
-  if (g.as) parts.push(g.as);
-  if (g.org) parts.push(g.org);
-  return parts.length ? parts.join(" · ") : "—";
+  if (g) {
+    const m = /^AS(\d+)/.exec(g.as || "");
+    if (m && record.asnName) return "AS" + m[1] + " · " + record.asnName;
+    const parts = [];
+    if (g.as) parts.push(g.as);
+    if (g.org) parts.push(g.org);
+    if (parts.length) return parts.join(" · ");
+  }
+  if (record && record.infra && record.infra.name) return record.infra.name + " · " + t("offlineHint");
+  return "—";
 }
 function renderEvidence(record) {
   const ul = $("evidence");

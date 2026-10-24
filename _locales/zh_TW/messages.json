@@ -61,6 +61,7 @@
   "allHeaders": { "message": "全部回應標頭" },
   "hostsTitle": { "message": "頁面網域分佈" },
   "hostsMain": { "message": "主文件" },
+  "offlineHint": { "message": "離線庫" },
   "timingNoData": { "message": "暫無時序資料 — 重新整理頁面後蒐集" },
   "reuseNote": { "message": "TCP/TLS 為 0 通常表示複用了既有連線或命中快取。" },
   "navNavigate": { "message": "直接導覽" },

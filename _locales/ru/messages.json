@@ -61,6 +61,7 @@
   "allHeaders": { "message": "Все заголовки ответа" },
   "hostsTitle": { "message": "Домены страницы" },
   "hostsMain": { "message": "главный документ" },
+  "offlineHint": { "message": "офлайн-база" },
   "timingNoData": { "message": "Данных о времени нет — обновите страницу" },
   "reuseNote": { "message": "0 мс для TCP/TLS обычно означает повторное использование соединения или кэш." },
   "navNavigate": { "message": "Прямой переход" },

@@ -1,0 +1,31 @@
+// AS 号 → 展示名(精选)。来源:公开稳定的运营商注册信息;没把握的一律不写。
+// 用途:ip-api 返回 "AS16509 Amazon.com..." 时,这里给出统一短名。
+export const ASN_NAMES = {
+  13335: "Cloudflare",
+  16509: "Amazon AWS",
+  14618: "Amazon AWS",
+  15169: "Google",
+  396982: "Google Cloud",
+  8075: "Microsoft",
+  12076: "Microsoft Azure",
+  54113: "Fastly",
+  20940: "Akamai",
+  16625: "Akamai",
+  32934: "Meta",
+  2906: "Netflix",
+  24940: "Hetzner",
+  14061: "DigitalOcean",
+  16276: "OVH",
+  63949: "Linode",
+  20473: "Vultr",
+  37963: "阿里云",
+  45102: "阿里云",
+  132203: "腾讯云",
+  38365: "百度",
+  4134: "中国电信",
+  4837: "中国联通",
+  9808: "中国移动",
+  58453: "中国移动国际",
+  4713: "NTT",
+  2516: "KDDI"
+};

@@ -2,6 +2,17 @@
 // 常驻行为(无需打开弹窗):自动检测、自动 Ping、按站点历史记录、向页面角标推送结果。
 
 import { headersToMap, detectFromHeaders, asnHint, checkSecurityHeaders } from "./lib/detect.js";
+import { initInfraDb, lookupInfra } from "./lib/asn-db.js";
+import { ASN_NAMES } from "./rules/asn-names.js";
+
+// 离线基础设施库(打包在 rules/infra-ranges.bin):启动时加载一次
+initInfraDb();
+
+function mapAsnName(asText) {
+  const m = /^AS(\d+)/.exec(String(asText || ""));
+  if (!m) return null;
+  return Object.prototype.hasOwnProperty.call(ASN_NAMES, m[1]) ? ASN_NAMES[m[1]] : null;
+}
 
 function keyOf(tabId) { return "tab:" + tabId; }
 
@@ -54,6 +65,7 @@ async function updateHistory(record) {
     protocol: (record.timing && record.timing.protocol) || null,
     ttfb: (record.timing && record.timing.ttfb) || null,
     median: (record.ping && record.ping.median) || null,
+    infraName: (record.infra && record.infra.name) || null,
     at: Date.now()
   };
   const keys = Object.keys(hist);
@@ -87,6 +99,7 @@ async function lookupGeo(tabId) {
         as: data.as || null
       };
       record.asnCdnHint = asnHint(record.geo.org, record.geo.as);
+      record.asnName = mapAsnName(record.geo.as);
       record.geoError = null;
     } else {
       record.geoError = (data && data.message) || "IP 地理查询失败";
@@ -131,6 +144,8 @@ async function onHeadersReceived(details) {
     },
     result
   );
+  // 离线库判定 IP 归属(不开第三方查询时也有基础结论)
+  record.infra = record.ip ? lookupInfra(record.ip) : null;
   await setRecord(details.tabId, record);
   updateBadge(details.tabId, record);
   if (record.ip && (await geoEnabled())) lookupGeo(details.tabId);

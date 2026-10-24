@@ -61,6 +61,7 @@
   "allHeaders": { "message": "Tous les en-têtes de réponse" },
   "hostsTitle": { "message": "Domaines de la page" },
   "hostsMain": { "message": "document principal" },
+  "offlineHint": { "message": "base hors ligne" },
   "timingNoData": { "message": "Pas encore de données — rechargez la page" },
   "reuseNote": { "message": "0 ms pour TCP/TLS signifie généralement une connexion réutilisée ou un cache." },
   "navNavigate": { "message": "Navigation directe" },

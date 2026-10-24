@@ -10,6 +10,7 @@
 - **连接时序与 Ping**:DNS / TCP / TLS / TTFB / 下载分段瀑布图、协议与压缩信息、HTTP RTT 近似 Ping
 - **缓存状态**:浏览器本地缓存命中(Navigation Timing)+ CDN 边缘缓存命中(`X-Cache`/`CF-Cache-Status`/`Age`)
 - **开发者工具箱**:9 项安全响应头体检 ✓✗、一键复制 Markdown 报告、全部响应头查看、页面域名分布(各子域命中的 CDN,`webRequest` 不受 CORS 限制)
+- **离线 ASN/云归属库**:内置官方 IP 段编译的 57KB 二进制库(Cloudflare/AWS/CloudFront/GCP,约 6300 段 IPv4),关闭第三方查询也能标注 IP 归属;ip-api 结果另有 AS 号→厂商短名对照。更新:`node tools/build-infra-db.mjs` 重新拉取官方源并重编快照
 - **SPA 友好**:跟踪 History/hash 软导航,按需自动重测 Ping;常驻后台运行(页面角标默认关闭、可在设置开启;按站点历史)
 - **9 种语言界面**:简/繁中文、英、日、韩、俄、法、德、西(chrome.i18n 按浏览器语言自动切换)
 

@@ -61,6 +61,7 @@
   "allHeaders": { "message": "全部响应头" },
   "hostsTitle": { "message": "页面域名分布" },
   "hostsMain": { "message": "主文档" },
+  "offlineHint": { "message": "离线库" },
   "timingNoData": { "message": "暂无时序数据 — 刷新页面后采集" },
   "reuseNote": { "message": "TCP/TLS 为 0 通常表示复用了已有连接或命中缓存。" },
   "navNavigate": { "message": "直接导航" },

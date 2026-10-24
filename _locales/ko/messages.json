@@ -61,6 +61,7 @@
   "allHeaders": { "message": "전체 응답 헤더" },
   "hostsTitle": { "message": "페이지 도메인 분포" },
   "hostsMain": { "message": "메인 문서" },
+  "offlineHint": { "message": "오프라인 DB" },
   "timingNoData": { "message": "타이밍 데이터 없음 — 새로 고치면 수집됩니다" },
   "reuseNote": { "message": "TCP/TLS가 0ms면 연결 재사용 또는 캐시일 가능성이 큽니다." },
   "navNavigate": { "message": "직접 탐색" },
