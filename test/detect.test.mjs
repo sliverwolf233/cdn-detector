@@ -1,5 +1,5 @@
 // 检测引擎单元测试: node test/detect.test.mjs (或 npm test)
-import { headersToMap, detectFromHeaders, asnHint } from "../lib/detect.js";
+import { headersToMap, detectFromHeaders, asnHint, checkSecurityHeaders } from "../lib/detect.js";
 
 let failures = 0;
 function check(label, cond, extra) {
@@ -64,6 +64,15 @@ function hm(pairs) {
 (function () {
   const h = asnHint("CLOUDFLARENET", "AS13335 Cloudflare, Inc.");
   check("asn hint cloudflare", !!h && /cloudflare/i.test(h.name), JSON.stringify(h));
+})();
+
+// 9. 安全响应头体检
+(function () {
+  const sec = checkSecurityHeaders(hm([["Strict-Transport-Security", "max-age=63072000"], ["Content-Security-Policy", "default-src 'self'"]]));
+  check("security headers 9 items", sec.length === 9);
+  check("hsts present", sec.find(function (s) { return s.name === "strict-transport-security"; }).present === true);
+  check("csp present", sec.find(function (s) { return s.name === "content-security-policy"; }).present === true);
+  check("xfo missing", sec.find(function (s) { return s.name === "x-frame-options"; }).present === false);
 })();
 
 if (failures) {

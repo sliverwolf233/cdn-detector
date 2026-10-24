@@ -47,6 +47,8 @@ CDN 探测器 —— 一键查看任何网站背后的 CDN。
 【缓存状态】
 浏览器本地缓存命中(基于 Navigation Timing)与 CDN 边缘缓存命中(X-Cache / CF-Cache-Status / Age)一目了然。
 
+【安全与报告】9 项安全响应头逐项 ✓✗;一键复制 Markdown 检测报告;查看全部响应头;页面域名分布(各子域各自命中的 CDN)。
+
 【Ping / RTT】
 以 HTTP 往返近似测量到该站点的延迟(预热后 3 次取中位数;浏览器扩展无法发送 ICMP,故为近似值,界面已如实标注)。
 
@@ -79,6 +81,7 @@ CDN Detector — see the CDN behind any website with one click.
 • Edge node & geolocation: POP codes decoded into regions (e.g. CF-RAY …-HKG → Hong Kong), cross-checked with the server IP's city/ISP/ASN.
 • Connection timing: a waterfall of the real main navigation — DNS lookup, TCP handshake, TLS handshake, time to first byte (TTFB) and content download — plus total, protocol (h2/h3/HTTP1.1), transfer size and compression.
 • Cache status: browser local cache hit (Navigation Timing) and CDN edge cache hit (X-Cache / CF-Cache-Status / Age).
+• Security & report: ✓/✗ for 9 security headers; one-click Markdown report copy; view all response headers; per-host CDN map of the page.
 • Ping / RTT: HTTP round-trip approximation to the site (median of 3 after warm-up; ICMP is unavailable to extensions, and the UI says so honestly).
 • Always-on without opening the popup: provider badge on the toolbar icon, an on-page chip (provider · region · latency), automatic detection and measurement after each navigation, and a per-site history of the last 50 checks.
 • SPA-friendly: tracks client-side route changes of single-page apps (React/Vue etc.), refreshing records and re-measuring latency as needed.

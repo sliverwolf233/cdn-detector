@@ -12,7 +12,10 @@
       <span class="logo">🛡️</span>
       <span class="title" data-i18n="popupTitle">🛡️ CDN 探测器</span>
     </div>
-    <button id="reload" class="icon-btn" data-i18n-tip="reloadTip" title="刷新页面并重新检测">↻</button>
+    <div class="actions">
+      <button id="copy" class="icon-btn" data-i18n-tip="copyReport" title="复制 Markdown 报告">📋</button>
+      <button id="reload" class="icon-btn" data-i18n-tip="reloadTip" title="刷新页面并重新检测">↻</button>
+    </div>
   </header>
 
   <section class="card hero">
@@ -65,6 +68,16 @@
     </div>
   </section>
 
+  <section class="card" id="hosts-card">
+    <div class="sec-title" data-i18n="hostsTitle">页面域名分布</div>
+    <div id="hosts-list"></div>
+  </section>
+
+  <section class="card" id="sec-card">
+    <div class="sec-title" data-i18n="secTitle">安全响应头</div>
+    <div id="sec-list" class="chips"></div>
+  </section>
+
   <section class="card">
     <div class="sec-title" data-i18n="nodeTitle">节点与 IP</div>
     <div class="kv"><span data-i18n="rowPop">边缘节点 (POP)</span><b id="pop">—</b></div>
@@ -83,6 +96,10 @@
   <details class="card evidence">
     <summary data-i18n="evidence">响应头证据</summary>
     <ul id="evidence"></ul>
+    <details id="all-headers-box" class="sub">
+      <summary><span data-i18n="allHeaders">全部响应头</span> (<span id="all-headers-count">0</span>)</summary>
+      <ul id="all-headers"></ul>
+    </details>
   </details>
 
   <section class="card settings">

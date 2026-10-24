@@ -1,7 +1,7 @@
 // Service Worker:监听主导航响应头 → CDN 检测 → session 存储 → 角标。
 // 常驻行为(无需打开弹窗):自动检测、自动 Ping、按站点历史记录、向页面角标推送结果。
 
-import { headersToMap, detectFromHeaders, asnHint } from "./lib/detect.js";
+import { headersToMap, detectFromHeaders, asnHint, checkSecurityHeaders } from "./lib/detect.js";
 
 function keyOf(tabId) { return "tab:" + tabId; }
 
@@ -100,7 +100,16 @@ async function lookupGeo(tabId) {
 
 async function onHeadersReceived(details) {
   const map = headersToMap(details.responseHeaders);
+  if (details.type !== "main_frame") {
+    noteSubresource(details, map);
+    return;
+  }
   const result = detectFromHeaders(map);
+  const security = checkSecurityHeaders(map);
+  // 全部响应头(截断存储:最多 80 个头,值最长 512 字符)供弹窗查看完整列表
+  const allHeaders = (details.responseHeaders || []).slice(0, 80).map(function (h) {
+    return { name: h.name, value: String(h.value == null ? "" : h.value).slice(0, 512) };
+  });
   let host = "";
   try { host = new URL(details.url).hostname; } catch (e) { host = ""; }
   const record = Object.assign(
@@ -115,7 +124,10 @@ async function onHeadersReceived(details) {
       asnCdnHint: null,
       timing: null,
       ping: null,
-      pingError: null
+      pingError: null,
+      hosts: {},
+      security: security,
+      allHeaders: allHeaders
     },
     result
   );
@@ -124,9 +136,37 @@ async function onHeadersReceived(details) {
   if (record.ip && (await geoEnabled())) lookupGeo(details.tabId);
 }
 
+// ---------- 页面子资源域名分布(被动识别其他域名的 CDN;webRequest 不受 CORS 限制) ----------
+const HOSTS_LIMIT = 30;
+
+async function noteSubresource(details, map) {
+  let host = "";
+  try { host = new URL(details.url).hostname; } catch (e) { return; }
+  const record = await getRecord(details.tabId);
+  if (!record) return; // 尚无主文档记录的标签页忽略
+  if (host === record.host) return;
+  if (record.hosts && record.hosts[host]) return; // 已识别过
+  const result = detectFromHeaders(map);
+  if (!record.hosts) record.hosts = {};
+  record.hosts[host] = {
+    status: result.status,
+    providerName: result.providerName || null,
+    badge: result.badge || null,
+    popCode: (result.pop && result.pop.code) || null,
+    popCity: (result.pop && result.pop.city) || null,
+    cache: (result.cache && result.cache.verdict) || null,
+    type: details.type || null
+  };
+  const keys = Object.keys(record.hosts);
+  if (keys.length > HOSTS_LIMIT) {
+    for (const k of keys.slice(0, keys.length - HOSTS_LIMIT)) delete record.hosts[k];
+  }
+  await setRecord(details.tabId, record);
+}
+
 chrome.webRequest.onHeadersReceived.addListener(
   onHeadersReceived,
-  { urls: ["http://*/*", "https://*/*"], types: ["main_frame"] },
+  { urls: ["http://*/*", "https://*/*"], types: ["main_frame", "sub_frame", "script", "stylesheet", "image", "font", "xmlhttprequest"] },
   ["responseHeaders"]
 );
 

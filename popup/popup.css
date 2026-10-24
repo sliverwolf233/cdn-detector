@@ -108,4 +108,13 @@ footer { padding: 2px 8px 6px; color: var(--md-on-surface-var); font-size: 10.5p
 .hrow { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 3px 0; font-size: 12px; }
 .hrow b { font-weight: 600; word-break: break-all; }
 .hrow span { color: var(--md-on-surface-var); flex: none; max-width: 55%; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.actions { display: flex; gap: 8px; }
+.sec-chip { border-radius: 8px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
+.sec-chip.ok { background: var(--ok-c); color: var(--ok); }
+.sec-chip.bad { background: var(--neutral-c); color: var(--neutral); opacity: 0.85; }
+details.sub { margin-top: 8px; margin-left: 4px; }
+details.sub summary { font-size: 11px; opacity: 0.9; }
+ul#all-headers { list-style: none; margin-top: 6px; max-height: 150px; overflow: auto; font-size: 11.5px; color: var(--md-on-surface-var); }
+ul#all-headers li { padding: 2px 0; word-break: break-all; }
+ul#all-headers code { color: var(--md-primary); background: var(--md-surface-chh); padding: 1px 5px; border-radius: 6px; }
 .hidden { display: none !important; }

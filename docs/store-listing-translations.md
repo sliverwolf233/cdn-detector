@@ -21,6 +21,7 @@ CDN 探测器 —— 一键查看任何网站背后的 CDN。
 【连接时序】主导航真实连接的细分瀑布图:DNS 解析、TCP 握手、TLS 握手、首字节时间(TTFB)、内容下载;另有连接合计、协议版本(h2/h3/HTTP1.1)、传输大小与压缩比。
 
 【缓存状态】浏览器本地缓存命中(基于 Navigation Timing)与 CDN 边缘缓存命中(X-Cache / CF-Cache-Status / Age)一目了然。
+【安全与报告】9 项安全响应头逐项 ✓✗;一键复制 Markdown 检测报告;查看全部响应头;页面域名分布(各子域各自命中的 CDN)。
 
 【Ping / RTT】以 HTTP 往返近似测量到该站点的延迟(预热后 3 次取中位数;浏览器扩展无法发送 ICMP,故为近似值,界面已如实标注)。
 
@@ -50,6 +51,7 @@ CDN 偵測器 —— 一鍵查看任何網站背後的 CDN。
 【連線時序】主導覽真實連線的細分瀑布圖:DNS 解析、TCP 握手、TLS 握手、首位元組時間(TTFB)、內容下載;另有連線合計、通訊協定版本(h2/h3/HTTP1.1)、傳輸大小與壓縮比。
 
 【快取狀態】瀏覽器本機快取命中(基於 Navigation Timing)與 CDN 邊緣快取命中(X-Cache / CF-Cache-Status / Age)一目瞭然。
+【安全與報告】9 項安全回應標頭逐項 ✓✗;一鍵複製 Markdown 偵測報告;檢視全部回應標頭;頁面網域分佈(各子網域命中的 CDN)。
 
 【Ping / RTT】以 HTTP 往返近似測量到該網站的延遲(預熱後取 3 次中位數;瀏覽器擴充功能無法傳送 ICMP,故為近似值,介面已如實標註)。
 
@@ -76,6 +78,7 @@ CDN Detector — see the CDN behind any website with one click.
 • Edge node & geolocation: POP codes decoded into regions (e.g. CF-RAY …-HKG → Hong Kong), cross-checked with the server IP's city/ISP/ASN.
 • Connection timing: waterfall of the real main navigation — DNS, TCP handshake, TLS handshake, TTFB, content download — plus total, protocol (h2/h3/HTTP1.1), transfer size and compression.
 • Cache status: browser local cache hit (Navigation Timing) and CDN edge cache hit (X-Cache / CF-Cache-Status / Age).
+• Security & report: ✓/✗ for 9 security headers; one-click Markdown report copy; view all response headers; per-host CDN map of the page.
 • Ping / RTT: HTTP round-trip approximation (median of 3 after warm-up; ICMP is unavailable to extensions, and the UI says so honestly).
 • Always-on without opening the popup: provider badge on the toolbar icon, on-page chip (provider · region · latency), automatic detection and measurement after each navigation, per-site history of the last 50 checks.
 • SPA-friendly: tracks client-side routing of single-page apps, refreshing records and re-measuring latency as needed.
@@ -100,6 +103,7 @@ CDN 検出器 —— ワンクリックであらゆるサイトの背後にあ�
 【接続タイミング】メインナビゲーションの実際の接続の細分ウォーターフォール:DNS 解決、TCP ハンドシェイク、TLS ハンドシェイク、TTFB、コンテンツ受信。合計、プロトコル(h2/h3/HTTP1.1)、転送サイズと圧縮率も表示。
 
 【キャッシュ状態】ブラウザーローカルキャッシュのヒット(Navigation Timing)と CDN エッジキャッシュのヒット(X-Cache / CF-Cache-Status / Age)を一目で確認。
+【セキュリティとレポート】9 項目のセキュリティヘッダーを ✓✗ で表示、Markdown レポートをワンクリックコピー、全レスポンスヘッダー表示、ページ内ドメインごとの CDN 分布。
 
 【Ping / RTT】HTTP 往復による近似レイテンシを測定(ウォームアップ後 3 回の中央値。拡張機能は ICMP を送れないため近似値であり、UI にも明記)。
 
@@ -129,6 +133,7 @@ CDN 탐지기 —— 원클릭으로 모든 사이트 뒤의 CDN을 확인하세
 【연결 타이밍】기본 탐색의 실제 연결 폭포수: DNS 조회, TCP 핸드셰이크, TLS 핸드셰이크, TTFB, 콘텐츠 다운로드. 합계, 프로토콜(h2/h3/HTTP1.1), 전송 크기와 압축률도 표시.
 
 【캐시 상태】브라우저 로컬 캐시 히트(Navigation Timing)와 CDN 엣지 캐시 히트(X-Cache / CF-Cache-Status / Age)를 한눈에.
+【보안 및 리포트】9개 보안 헤더 ✓✗ 표시, Markdown 리포트 원클릭 복사, 전체 응답 헤더 보기, 페이지 도메인별 CDN 분포.
 
 【Ping / RTT】HTTP 왕복 근사 지연 측정(워밍업 후 3회 중앙값. 확장 프로그램은 ICMP를 보낼 수 없어 근사값이며 UI에 명시).
 
@@ -155,6 +160,7 @@ CDN 탐지기 —— 원클릭으로 모든 사이트 뒤의 CDN을 확인하세
 • Граничный узел и геолокация: коды POP расшифровываются в регионы (например, CF-RAY …-HKG → Гонконг) и подтверждаются по городу/провайдеру/ASN серверного IP.
 • Времена соединения: водопад реального соединения — DNS, TCP, TLS, TTFB, загрузка; плюс итого, протокол (h2/h3/HTTP1.1), размер и сжатие.
 • Состояние кэша: попадание в локальный кэш браузера (Navigation Timing) и в кэш CDN (X-Cache / CF-Cache-Status / Age).
+• Безопасность и отчёт: ✓✗ по 9 заголовкам безопасности; копирование Markdown-отчёта одним кликом; просмотр всех заголовков ответа; распределение CDN по доменам страницы.
 • Ping / RTT: приближённая задержка по HTTP-циклам (медиана из 3 после прогрева; ICMP недоступен расширениям, что честно указано в интерфейсе).
 • Работает в фоне без открытия окна: значок провайдера на иконке, плавающий чип в правом нижнем углу (провайдер · регион · задержка), автоопределение и автозамеры при каждой навигации, история по 50 последним сайтам.
 • Поддержка SPA: отслеживает клиентскую маршрутизацию одностраничных приложений (React/Vue и др.).
@@ -176,6 +182,7 @@ Détecteur CDN — voyez le CDN derrière n'importe quel site en un clic.
 • Nœud edge et géolocalisation : les codes POP sont décodés en régions (ex. CF-RAY …-HKG → Hong Kong) et recoupés avec la ville/FAI/ASN de l'IP du serveur.
 • Chronométrage de connexion : cascade de la connexion réelle — DNS, TCP, TLS, TTFB, téléchargement ; total, protocole (h2/h3/HTTP1.1), taille transférée et compression.
 • État du cache : cache local du navigateur (Navigation Timing) et cache edge CDN (X-Cache / CF-Cache-Status / Age) en un coup d'œil.
+• Sécurité et rapport : ✓✗ sur 9 en-têtes de sécurité ; copie du rapport Markdown en un clic ; affichage de tous les en-têtes ; répartition des CDN par domaine de la page.
 • Ping / RTT : latence approximée par aller-retours HTTP (médiane de 3 après échauffement ; l'ICMP est indisponible pour une extension, et l'interface le précise honnêtement).
 • Toujours actif sans ouvrir la popup : badge du fournisseur sur l'icône, pastille flottante en bas à droite (fournisseur · région · latence), détection et mesures automatiques à chaque navigation, historique des 50 derniers sites.
 • Compatible SPA : suit le routage client des applications monopages (React/Vue, etc.).
@@ -197,6 +204,7 @@ CDN-Detektor — sehen Sie mit einem Klick das CDN hinter jeder Website.
 • Edge-Knoten & Geolokation: POP-Codes werden in Regionen aufgelöst (z. B. CF-RAY …-HKG → Hongkong) und mit Stadt/ISP/ASN der Server-IP abgeglichen.
 • Verbindungszeiten: Wasserfall der echten Verbindung — DNS, TCP-Handshake, TLS-Handshake, TTFB, Download; zusätzlich gesamt, Protokoll (h2/h3/HTTP1.1), Übertragungsgröße und Komprimierung.
 • Cache-Status: Treffer im lokalen Browser-Cache (Navigation Timing) und im CDN-Edge-Cache (X-Cache / CF-Cache-Status / Age) auf einen Blick.
+• Sicherheit & Bericht: ✓✗ für 9 Sicherheits-Header; Markdown-Bericht per Klick kopieren; alle Antwort-Header ansehen; CDN-Verteilung über die Domains der Seite.
 • Ping / RTT: näherungsweise Latenz über HTTP-Round-Trips (Median aus 3 nach Aufwärmen; ICMP ist für Erweiterungen nicht verfügbar — das sagt die Oberfläche ehrlich).
 • Immer aktiv ohne die Popup zu öffnen: Anbieter-Badge am Symbol, schwebender Chip unten rechts (Anbieter · Region · Latenz), automatische Erkennung und Messung bei jeder Navigation, Verlauf der letzten 50 Seiten.
 • SPA-tauglich: verfolgt das clientseitige Routing von Single-Page-Apps (React/Vue etc.).
@@ -218,6 +226,7 @@ Detector de CDN — vea el CDN detrás de cualquier sitio web con un clic.
 • Nodo edge y geolocalización: los códigos POP se decodifican en regiones (p. ej. CF-RAY …-HKG → Hong Kong) y se contrastan con ciudad/ISP/ASN de la IP del servidor.
 • Tiempos de conexión: cascada de la conexión real — DNS, saludo TCP, saludo TLS, TTFB y descarga; además total, protocolo (h2/h3/HTTP1.1), tamaño transferido y compresión.
 • Estado de la caché: aciertos de la caché local del navegador (Navigation Timing) y de la caché edge del CDN (X-Cache / CF-Cache-Status / Age) de un vistazo.
+• Seguridad e informe: ✓✗ en 9 cabeceras de seguridad; copia del informe Markdown con un clic; ver todas las cabeceras; distribución de CDN por dominio de la página.
 • Ping / RTT: latencia aproximada por rondas HTTP (mediana de 3 tras el calentamiento; el ICMP no está disponible para extensiones, y la interfaz lo indica con honestidad).
 • Siempre activo sin abrir el emergente: insignia del proveedor en el icono, chip flotante abajo a la derecha (proveedor · región · latencia), detección y medición automáticas en cada navegación, historial de los últimos 50 sitios.
 • Compatible con SPA: sigue el enrutado del lado cliente de las aplicaciones de una sola página (React/Vue, etc.).

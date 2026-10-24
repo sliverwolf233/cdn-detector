@@ -86,28 +86,31 @@
       chip = document.createElement("div");
       chip.id = "cdn-probe-chip";
       chip.style.cssText =
-        "position:fixed;right:12px;bottom:12px;z-index:2147483646;pointer-events:none;" +
-        "background:rgba(14,21,24,0.88);color:#DEE3E6;" +
-        "font:11px/1.4 'Segoe UI','Microsoft YaHei',system-ui,sans-serif;" +
-        "padding:4px 10px;border-radius:999px;border:1px solid rgba(99,210,238,0.45);" +
-        "box-shadow:0 2px 10px rgba(0,0,0,0.35);";
+        "position:fixed;right:12px;bottom:12px;z-index:2147483646;" +
+        "background:rgba(14,21,24,0.82);color:#DEE3E6;" +
+        "font:10px/1.4 'Segoe UI','Microsoft YaHei',system-ui,sans-serif;" +
+        "padding:3px 9px;border-radius:999px;border:1px solid rgba(99,210,238,0.35);" +
+        "opacity:0.55;transition:opacity 0.2s;cursor:default;";
+      chip.addEventListener("mouseenter", function () { chip.style.opacity = "1"; });
+      chip.addEventListener("mouseleave", function () { chip.style.opacity = "0.55"; });
       document.documentElement.appendChild(chip);
     }
     chip.textContent = text;
   }
 
+  // 角标默认关闭(opt-in);开启后为极简半透明样式,悬停完全显示
   try {
     chrome.storage.local.get("overlayEnabled").then(function (b) {
-      overlayOn = b.overlayEnabled !== false;
+      overlayOn = b.overlayEnabled === true;
       syncChip();
     });
     chrome.storage.onChanged.addListener(function (changes, area) {
       if (area === "local" && changes.overlayEnabled) {
-        overlayOn = changes.overlayEnabled.newValue !== false;
+        overlayOn = changes.overlayEnabled.newValue === true;
         syncChip();
       }
     });
-  } catch (e) { /* 存储不可用时保持默认开启 */ }
+  } catch (e) { /* 存储不可用时保持关闭 */ }
 
   // ---------- 消息 ----------
   chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {

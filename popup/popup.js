@@ -1,4 +1,5 @@
-// popup 逻辑:MD3E 界面 + 连接时序 + Ping。全部文案走 chrome.i18n;无 API 环境回退内置简体中文。
+// popup 逻辑:MD3E 界面 + 连接时序 + Ping + 安全头 + 域名分布 + 报告复制。
+// 全部文案走 chrome.i18n;无 API 环境回退内置简体中文。
 
 const $ = function (id) { return document.getElementById(id); };
 
@@ -64,7 +65,13 @@ const FALLBACK = {
   "reuseNote": "TCP/TLS 为 0 通常表示复用了已有连接或命中缓存。",
   "navNavigate": "直接导航",
   "navReload": "刷新",
-  "navBackFwd": "前进/后退"
+  "navBackFwd": "前进/后退",
+  "secTitle": "安全响应头",
+  "copyReport": "复制 Markdown 报告",
+  "copied": "已复制",
+  "allHeaders": "全部响应头",
+  "hostsTitle": "页面域名分布",
+  "hostsMain": "主文档"
 };
 
 const hasChrome = typeof chrome !== "undefined" && chrome.storage && chrome.tabs;
@@ -124,7 +131,27 @@ const DEMO_RECORD = {
   },
   cache: { verdict: "hit", header: "cf-cache-status", raw: "HIT", age: 120 },
   ping: { samples: [41, 38, 44], min: 38, median: 41, max: 44, at: 0 },
-  pingError: null
+  pingError: null,
+  hosts: {
+    "static.example.com": { status: "protected", providerName: "Cloudflare", badge: "CF", popCode: "HKG", popCity: "香港", cache: "hit", type: "script" },
+    "cdn.example.net": { status: "protected", providerName: "Amazon CloudFront", badge: "AMZN", popCode: null, popCity: null, cache: "miss", type: "image" }
+  },
+  security: [
+    { name: "strict-transport-security", present: true },
+    { name: "content-security-policy", present: true },
+    { name: "x-content-type-options", present: true },
+    { name: "x-frame-options", present: false },
+    { name: "referrer-policy", present: true },
+    { name: "permissions-policy", present: false },
+    { name: "cross-origin-opener-policy", present: false },
+    { name: "cross-origin-embedder-policy", present: false },
+    { name: "cross-origin-resource-policy", present: false }
+  ],
+  allHeaders: [
+    { name: "cf-ray", value: "8f2a1b2c3d4e5f6g-HKG" },
+    { name: "server", value: "cloudflare" },
+    { name: "strict-transport-security", value: "max-age=63072000" }
+  ]
 };
 
 // ---------- 格式化 ----------
@@ -295,9 +322,7 @@ function renderTransfer(record) {
   } else {
     setText("m-compress", "—");
   }
-  // 浏览器本地缓存(Navigation Timing:transferSize=0 即未走网络)
   setText("m-bcache", timing.browserCache === "hit" ? t("cacheHit") : (timing.browserCache === "miss" ? t("cacheMiss") : "—"));
-  // CDN 边缘缓存(响应头 X-Cache / CF-Cache-Status / Age 等)
   const cache = record && record.cache;
   if (cache && cache.verdict) {
     let cc = cache.verdict === "hit" ? t("cacheHit") : t("cacheMiss");
@@ -326,6 +351,155 @@ function renderPing(record) {
   }
 }
 
+// ---------- 安全头 / 域名分布 / 全部响应头 ----------
+function renderSecurity(record) {
+  const card = $("sec-card");
+  const box = $("sec-list");
+  const items = record && record.security;
+  if (!items || !items.length) { card.classList.add("hidden"); return; }
+  card.classList.remove("hidden");
+  box.textContent = "";
+  for (const it of items) {
+    const chip = document.createElement("span");
+    chip.className = "sec-chip " + (it.present ? "ok" : "bad");
+    chip.textContent = (it.present ? "✓ " : "✗ ") + it.name;
+    box.appendChild(chip);
+  }
+}
+function renderHosts(record) {
+  const card = $("hosts-card");
+  const list = $("hosts-list");
+  const hosts = record && record.hosts ? Object.keys(record.hosts) : [];
+  if (!record || !record.host) { card.classList.add("hidden"); return; }
+  card.classList.remove("hidden");
+  list.textContent = "";
+  const mkRow = function (host, isMain, it) {
+    const row = document.createElement("div");
+    row.className = "hrow";
+    const left = document.createElement("b");
+    left.textContent = host + (isMain ? " (" + t("hostsMain") + ")" : "");
+    const right = document.createElement("span");
+    const parts = [];
+    if (it) {
+      if (it.badge || it.providerName) parts.push(it.badge || it.providerName);
+      if (it.popCity) parts.push(it.popCity);
+      else if (it.popCode) parts.push(it.popCode);
+      if (it.cache) parts.push(it.cache === "hit" ? t("cacheHit") : t("cacheMiss"));
+    }
+    right.textContent = parts.join(" · ");
+    row.appendChild(left);
+    row.appendChild(right);
+    list.appendChild(row);
+  };
+  mkRow(record.host, true, {
+    badge: record.badge,
+    providerName: record.providerName,
+    popCity: record.pop && record.pop.city,
+    popCode: record.pop && record.pop.code,
+    cache: record.cache && record.cache.verdict
+  });
+  for (const h of hosts.slice(0, 10)) mkRow(h, false, record.hosts[h]);
+  if (hosts.length > 10) {
+    const d = document.createElement("div");
+    d.className = "hrow";
+    d.textContent = "…";
+    list.appendChild(d);
+  }
+}
+function renderAllHeaders(record) {
+  const list = $("all-headers");
+  if (!list) return;
+  list.textContent = "";
+  const items = record && record.allHeaders ? record.allHeaders : [];
+  $("all-headers-count").textContent = String(items.length);
+  if (!items.length) {
+    const li = document.createElement("li");
+    li.textContent = t("noHeaders");
+    list.appendChild(li);
+    return;
+  }
+  for (const h of items) {
+    const li = document.createElement("li");
+    const code = document.createElement("code");
+    code.textContent = h.name;
+    li.appendChild(code);
+    const v = String(h.value || "");
+    li.appendChild(document.createTextNode(": " + (v.length > 120 ? v.slice(0, 120) + "…" : v)));
+    list.appendChild(li);
+  }
+}
+
+// ---------- Markdown 报告 ----------
+function buildReport(record) {
+  if (!record) return "";
+  const L = [];
+  L.push("### " + (record.host || ""));
+  L.push("");
+  L.push("- " + statusInfo(record).text);
+  const prov = providerText(record);
+  if (prov && prov !== "—") L.push("- " + t("rowProvider") + ": " + prov);
+  const pop = popText(record);
+  if (pop !== "—") L.push("- " + t("rowPop") + ": " + pop);
+  const reg = regionText(record);
+  if (reg !== "—") L.push("- " + t("rowRegion") + ": " + reg);
+  if (record.ip) {
+    const asn = asnText(record);
+    L.push("- " + t("rowIp") + ": " + record.ip + (asn !== "—" ? " · " + asn : ""));
+  }
+  const timing = record.timing;
+  if (timing) {
+    let total = 0;
+    for (const k of ["dns", "tcp", "tls", "ttfb", "download"]) {
+      if (typeof timing[k] === "number") total += timing[k];
+    }
+    L.push("- " + t("timingTitle") + ": " + [
+      t("dnsTime") + " " + fmtMs(timing.dns),
+      t("tcpTime") + " " + fmtMs(timing.tcp),
+      t("tlsTime") + " " + fmtMs(timing.tls),
+      t("ttfbLabel") + " " + fmtMs(timing.ttfb),
+      t("downloadTime") + " " + fmtMs(timing.download)
+    ].join(" · ") + " · " + t("totalTime") + " " + total + " ms");
+    L.push("- " + (timing.protocol || "http") + " · " + t("transferLabel") + ": " + fmtBytes(timing.transferSize));
+  }
+  const cache = record.cache;
+  if (cache && cache.verdict) {
+    let cc = "- " + t("cdnCache") + ": " + (cache.verdict === "hit" ? t("cacheHit") : t("cacheMiss"));
+    if (typeof cache.age === "number") cc += " · Age " + cache.age + "s";
+    L.push(cc);
+  }
+  if (record.ping && typeof record.ping.median === "number") {
+    L.push("- " + t("pingTitle") + ": " + t("pingMed") + " " + record.ping.median + " ms (" + t("pingMin") + " " + record.ping.min + " / " + t("pingMax") + " " + record.ping.max + ")");
+  }
+  if (record.security && record.security.length) {
+    L.push("- " + t("secTitle") + ": " + record.security.map(function (s) {
+      return (s.present ? "✓" : "✗") + s.name;
+    }).join(" "));
+  }
+  const hosts = record.hosts ? Object.keys(record.hosts) : [];
+  if (hosts.length) {
+    L.push("- " + t("hostsTitle") + ":");
+    for (const h of hosts.slice(0, 10)) {
+      const it = record.hosts[h];
+      const bits = [];
+      if (it.badge || it.providerName) bits.push(it.badge || it.providerName);
+      if (it.popCity) bits.push(it.popCity);
+      if (it.cache) bits.push(it.cache === "hit" ? t("cacheHit") : t("cacheMiss"));
+      L.push("  - " + h + (bits.length ? " · " + bits.join(" · ") : ""));
+    }
+  }
+  if (record.evidence && record.evidence.length) {
+    L.push("");
+    L.push("```");
+    for (const h of record.evidence) {
+      for (const v of h.values) L.push(h.name + ": " + v);
+    }
+    L.push("```");
+  }
+  L.push("");
+  L.push("_CDN Detector · " + new Date(record.timeStamp || Date.now()).toLocaleString() + "_");
+  return L.join("\n");
+}
+
 function render(record) {
   setText("host", record && record.host ? record.host : "—");
   const s = statusInfo(record);
@@ -350,6 +524,9 @@ function render(record) {
   renderTiming(record);
   renderTransfer(record);
   renderPing(record);
+  renderHosts(record);
+  renderSecurity(record);
+  renderAllHeaders(record);
   renderEvidence(record);
 }
 function setBusy(text) {
@@ -442,10 +619,26 @@ async function doPing(tabId) {
 async function main() {
   applyI18n();
 
+  // 复制 Markdown 报告(演示模式也可用)
+  $("copy").addEventListener("click", async function () {
+    let rec = DEMO_RECORD;
+    if (hasChrome) {
+      const fresh = await loadRecord();
+      if (fresh.record) rec = fresh.record;
+    }
+    const text = buildReport(rec);
+    if (!text) return;
+    try { await navigator.clipboard.writeText(text); } catch (e) { /* 剪贴板不可用 */ }
+    const btn = $("copy");
+    btn.textContent = "✓";
+    setTimeout(function () { btn.textContent = "📋"; }, 1200);
+  });
+
   if (!hasChrome) {
     render(DEMO_RECORD);
     $("geo-toggle").checked = true;
     $("ping-toggle").checked = true;
+    $("overlay-toggle").checked = false;
     $("lookup").classList.add("hidden");
     $("ping").disabled = true;
     $("reload").disabled = true;
@@ -506,8 +699,9 @@ async function main() {
     }
   });
 
+  // 页面角标:默认关闭(opt-in)
   const overlayBag = await chrome.storage.local.get("overlayEnabled");
-  $("overlay-toggle").checked = overlayBag.overlayEnabled !== false;
+  $("overlay-toggle").checked = overlayBag.overlayEnabled === true;
   $("overlay-toggle").addEventListener("change", async function (e) {
     await chrome.storage.local.set({ overlayEnabled: e.target.checked });
   });

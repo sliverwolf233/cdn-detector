@@ -9,7 +9,8 @@
 - 扩展图标**角标**直接显示 CDN 短名(如 `CF`),绿色=已接入、橙色=疑似
 - **连接时序与 Ping**:DNS / TCP / TLS / TTFB / 下载分段瀑布图、协议与压缩信息、HTTP RTT 近似 Ping
 - **缓存状态**:浏览器本地缓存命中(Navigation Timing)+ CDN 边缘缓存命中(`X-Cache`/`CF-Cache-Status`/`Age`)
-- **SPA 友好**:跟踪 History/hash 软导航,按需自动重测 Ping;常驻后台运行(页面角标 + 按站点历史)
+- **开发者工具箱**:9 项安全响应头体检 ✓✗、一键复制 Markdown 报告、全部响应头查看、页面域名分布(各子域命中的 CDN,`webRequest` 不受 CORS 限制)
+- **SPA 友好**:跟踪 History/hash 软导航,按需自动重测 Ping;常驻后台运行(页面角标默认关闭、可在设置开启;按站点历史)
 - **9 种语言界面**:简/繁中文、英、日、韩、俄、法、德、西(chrome.i18n 按浏览器语言自动切换)
 
 ## 安装
