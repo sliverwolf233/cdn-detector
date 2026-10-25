@@ -1,5 +1,5 @@
 // 检测引擎单元测试: node test/detect.test.mjs (或 npm test)
-import { headersToMap, detectFromHeaders, asnHint, checkSecurityHeaders } from "../lib/detect.js";
+import { headersToMap, detectFromHeaders, asnHint, checkSecurityHeaders, detectWAF } from "../lib/detect.js";
 
 let failures = 0;
 function check(label, cond, extra) {
@@ -73,6 +73,24 @@ function hm(pairs) {
   check("hsts present", sec.find(function (s) { return s.name === "strict-transport-security"; }).present === true);
   check("csp present", sec.find(function (s) { return s.name === "content-security-policy"; }).present === true);
   check("xfo missing", sec.find(function (s) { return s.name === "x-frame-options"; }).present === false);
+})();
+
+// 10. WAF 被动识别
+(function () {
+  const aws = detectWAF(hm([["X-Amzn-Waf-Action", "BLOCK"], ["Server", "nginx"]]));
+  check("aws waf detected", !!aws && aws.id === "aws-waf" && aws.header === "x-amzn-waf-action", JSON.stringify(aws));
+
+  const f5 = detectWAF(hm([["Server", "Apache"], ["Set-Cookie", "TSa1b2c3d4e5=xyz; path=/; Httponly"]]));
+  check("f5 asm by TS cookie", !!f5 && f5.id === "f5-asm" && f5.header === "set-cookie", JSON.stringify(f5));
+
+  const cf = detectWAF(hm([["Cf-Mitigated", "challenge"], ["Server", "cloudflare"]]));
+  check("cloudflare waf mitigated", !!cf && cf.id === "cloudflare-waf" && cf.mitigated === "challenge", JSON.stringify(cf));
+
+  const none = detectWAF(hm([["Server", "nginx"], ["Content-Type", "text/html"]]));
+  check("no waf", none === null, JSON.stringify(none));
+
+  const modsec = detectWAF(hm([["Server", "Mod_Security"]]));
+  check("modsecurity by server", !!modsec && modsec.id === "modsecurity", JSON.stringify(modsec));
 })();
 
 if (failures) {

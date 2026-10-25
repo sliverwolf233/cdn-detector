@@ -72,7 +72,10 @@ const FALLBACK = {
   "allHeaders": "全部响应头",
   "hostsTitle": "页面域名分布",
   "hostsMain": "主文档",
-  "offlineHint": "离线库"
+  "offlineHint": "离线库",
+  "wafTitle": "WAF 防火墙",
+  "wafNone": "未检测到 WAF 特征",
+  "wafBlockedWarn": "⚠️ 本次访问可能被 WAF 拦截或质询"
 };
 
 const hasChrome = typeof chrome !== "undefined" && chrome.storage && chrome.tabs;
@@ -133,6 +136,9 @@ const DEMO_RECORD = {
     browserCache: "miss", collectedAt: 0
   },
   cache: { verdict: "hit", header: "cf-cache-status", raw: "HIT", age: 120 },
+  waf: { id: "aws-waf", name: "AWS WAF", header: "x-amzn-waf-action", value: "ALLOW", mitigated: null },
+  statusCode: 200,
+  wafBlocked: false,
   ping: { samples: [41, 38, 44], min: 38, median: 41, max: 44, at: 0 },
   pingError: null,
   hosts: {
@@ -508,6 +514,35 @@ function buildReport(record) {
   return L.join("\n");
 }
 
+// ---------- WAF ----------
+function renderWaf(record) {
+  const card = $("waf-card");
+  const list = $("waf-list");
+  if (!record) { card.classList.add("hidden"); return; }
+  card.classList.remove("hidden");
+  list.textContent = "";
+  const row = document.createElement("div");
+  row.className = "hrow";
+  const left = document.createElement("b");
+  left.textContent = record.waf ? record.waf.name : t("wafNone");
+  const right = document.createElement("span");
+  const parts = [];
+  if (typeof record.statusCode === "number") parts.push("HTTP " + record.statusCode);
+  if (record.waf && record.waf.header) parts.push(record.waf.header);
+  right.textContent = parts.join(" · ");
+  row.appendChild(left);
+  row.appendChild(right);
+  list.appendChild(row);
+  if (record.wafBlocked) {
+    const warn = document.createElement("div");
+    warn.className = "hint warn";
+    let text = t("wafBlockedWarn");
+    if (record.waf && record.waf.mitigated) text += " (" + record.waf.mitigated + ")";
+    warn.textContent = text;
+    list.appendChild(warn);
+  }
+}
+
 function render(record) {
   setText("host", record && record.host ? record.host : "—");
   const s = statusInfo(record);
@@ -533,6 +568,7 @@ function render(record) {
   renderTransfer(record);
   renderPing(record);
   renderHosts(record);
+  renderWaf(record);
   renderSecurity(record);
   renderAllHeaders(record);
   renderEvidence(record);

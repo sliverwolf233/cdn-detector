@@ -49,6 +49,8 @@ CDN 探测器 —— 一键查看任何网站背后的 CDN。
 
 【安全与报告】9 项安全响应头逐项 ✓✗;一键复制 Markdown 检测报告;查看全部响应头;页面域名分布(各子域各自命中的 CDN)。
 
+【WAF 防火墙】被动识别 AWS WAF、Cloudflare 质询、Imperva、F5 BIG-IP、Akamai、ModSecurity、宝塔 WAF、Reblaze;记录主文档状态码,403/406/429/503 且命中 WAF 时警示「本次访问可能被拦截/质询」。
+
 【Ping / RTT】
 以 HTTP 往返近似测量到该站点的延迟(预热后 3 次取中位数;浏览器扩展无法发送 ICMP,故为近似值,界面已如实标注)。
 
@@ -82,6 +84,7 @@ CDN Detector — see the CDN behind any website with one click.
 • Connection timing: a waterfall of the real main navigation — DNS lookup, TCP handshake, TLS handshake, time to first byte (TTFB) and content download — plus total, protocol (h2/h3/HTTP1.1), transfer size and compression.
 • Cache status: browser local cache hit (Navigation Timing) and CDN edge cache hit (X-Cache / CF-Cache-Status / Age).
 • Security & report: ✓/✗ for 9 security headers; one-click Markdown report copy; view all response headers; per-host CDN map of the page.
+• WAF detection (passive): AWS WAF, Cloudflare challenges, Imperva, F5 BIG-IP, Akamai, ModSecurity, BT WAF, Reblaze; the main-document status code is recorded and a warning is shown when 403/406/429/503 coincides with a WAF match.
 • Ping / RTT: HTTP round-trip approximation to the site (median of 3 after warm-up; ICMP is unavailable to extensions, and the UI says so honestly).
 • Always-on without opening the popup: provider badge on the toolbar icon, an on-page chip (provider · region · latency), automatic detection and measurement after each navigation, and a per-site history of the last 50 checks.
 • SPA-friendly: tracks client-side route changes of single-page apps (React/Vue etc.), refreshing records and re-measuring latency as needed.
@@ -113,10 +116,10 @@ CDN Detector — see the CDN behind any website with one click.
 ## 提交表单「隐私」页逐字段粘贴(2026-10 更新版表单)
 
 ### 单一用途描述
-检测并展示用户当前所访问网站的 CDN 信息:该网站是否由 CDN 保护/加速、命中哪家 CDN 厂商、本次连接被分配到哪个边缘节点(POP)及所在地区,以及该次连接的 DNS/TCP/TLS/TTFB 时序与往返延迟。扩展的全部功能都服务于这一个用途,不提供任何无关功能。
+分析并展示用户当前所访问网站的网络基础设施:该网站是否由 CDN 保护/加速、命中哪家 CDN 厂商、本次连接被分配到哪个边缘节点(POP)及所在地区、该次连接的 DNS/TCP/TLS/TTFB 时序与往返延迟、页面各子域名的 CDN 分布,以及该网站安全响应头的配置情况。扩展的全部功能都服务于"分析当前网站网络基础设施"这一个用途,不提供任何无关功能。
 
 ### webRequest 理由
-扩展的唯一功能是检测用户所访问网站的 CDN,需要只读读取主导航(main_frame)响应头,识别 CDN 厂商特征头(如 cf-ray、x-amz-cf-id、x-served-by)与缓存状态头(x-cache、age)。仅使用非阻塞的 webRequest 读取;不修改、不拦截、不重定向任何请求,不访问请求/响应体。
+扩展的唯一功能是分析所访问网站的网络基础设施,需要只读读取响应头:主导航(main_frame)用于识别 CDN 厂商特征头(cf-ray、x-amz-cf-id、x-served-by)、缓存状态头(x-cache、age)与安全响应头(HSTS/CSP 等);脚本/样式/图片等子资源响应头用于展示页面各子域名的 CDN 分布。仅使用非阻塞的 webRequest 读取;不修改、不拦截、不重定向任何请求,不访问请求/响应体。
 
 ### storage 理由
 在浏览器本地保存:当前标签页的检测结果(chrome.storage.session,关标签页即失效)、用户设置开关、按站点的最近 50 条检测历史(仅域名与聚合指标)。所有数据只存本地,不上传任何服务器;卸载扩展即全部删除。

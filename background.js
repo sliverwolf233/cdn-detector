@@ -1,7 +1,7 @@
 // Service Worker:监听主导航响应头 → CDN 检测 → session 存储 → 角标。
 // 常驻行为(无需打开弹窗):自动检测、自动 Ping、按站点历史记录、向页面角标推送结果。
 
-import { headersToMap, detectFromHeaders, asnHint, checkSecurityHeaders } from "./lib/detect.js";
+import { headersToMap, detectFromHeaders, asnHint, checkSecurityHeaders, detectWAF } from "./lib/detect.js";
 import { initInfraDb, lookupInfra } from "./lib/asn-db.js";
 import { ASN_NAMES } from "./rules/asn-names.js";
 
@@ -66,6 +66,7 @@ async function updateHistory(record) {
     ttfb: (record.timing && record.timing.ttfb) || null,
     median: (record.ping && record.ping.median) || null,
     infraName: (record.infra && record.infra.name) || null,
+    wafName: (record.waf && record.waf.name) || null,
     at: Date.now()
   };
   const keys = Object.keys(hist);
@@ -119,6 +120,10 @@ async function onHeadersReceived(details) {
   }
   const result = detectFromHeaders(map);
   const security = checkSecurityHeaders(map);
+  const waf = detectWAF(map);
+  // 拦截/质询判定:命中 WAF 且状态码为 403/406/429/503,或存在 cf-mitigated 质询标记
+  const statusCode = details.statusCode || null;
+  const wafBlocked = !!(waf && (waf.mitigated || [403, 406, 429, 503].indexOf(statusCode) !== -1));
   // 全部响应头(截断存储:最多 80 个头,值最长 512 字符)供弹窗查看完整列表
   const allHeaders = (details.responseHeaders || []).slice(0, 80).map(function (h) {
     return { name: h.name, value: String(h.value == null ? "" : h.value).slice(0, 512) };
@@ -140,7 +145,10 @@ async function onHeadersReceived(details) {
       pingError: null,
       hosts: {},
       security: security,
-      allHeaders: allHeaders
+      allHeaders: allHeaders,
+      waf: waf,
+      statusCode: statusCode,
+      wafBlocked: wafBlocked
     },
     result
   );

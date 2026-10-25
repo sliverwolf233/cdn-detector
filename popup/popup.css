@@ -117,4 +117,5 @@ details.sub summary { font-size: 11px; opacity: 0.9; }
 ul#all-headers { list-style: none; margin-top: 6px; max-height: 150px; overflow: auto; font-size: 11.5px; color: var(--md-on-surface-var); }
 ul#all-headers li { padding: 2px 0; word-break: break-all; }
 ul#all-headers code { color: var(--md-primary); background: var(--md-surface-chh); padding: 1px 5px; border-radius: 6px; }
+.hint.warn { color: #FF8A80; font-weight: 600; }
 .hidden { display: none !important; }
