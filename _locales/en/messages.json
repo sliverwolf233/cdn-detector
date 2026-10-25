@@ -62,6 +62,7 @@
   "hostsTitle": { "message": "Hosts on this page" },
   "hostsMain": { "message": "main document" },
   "offlineHint": { "message": "offline DB" },
+  "wafInterstitialWarn": { "message": "⚠️ Page looks like a WAF interstitial (HTTP 200)" },
   "wafTitle": { "message": "WAF firewall" },
   "wafNone": { "message": "No WAF fingerprints detected" },
   "wafBlockedWarn": { "message": "⚠️ This visit may be blocked or challenged by a WAF" },

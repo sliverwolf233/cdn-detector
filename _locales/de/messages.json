@@ -62,6 +62,7 @@
   "hostsTitle": { "message": "Domains der Seite" },
   "hostsMain": { "message": "Haupt-Dokument" },
   "offlineHint": { "message": "Offline-DB" },
+  "wafInterstitialWarn": { "message": "⚠️ Seite sieht nach WAF-Sperrseite aus (HTTP 200)" },
   "wafTitle": { "message": "WAF-Firewall" },
   "wafNone": { "message": "Keine WAF-Spuren erkannt" },
   "wafBlockedWarn": { "message": "⚠️ Dieser Besuch wurde möglicherweise von einer WAF blockiert oder geprüft" },

@@ -75,7 +75,8 @@ const FALLBACK = {
   "offlineHint": "离线库",
   "wafTitle": "WAF 防火墙",
   "wafNone": "未检测到 WAF 特征",
-  "wafBlockedWarn": "⚠️ 本次访问可能被 WAF 拦截或质询"
+  "wafBlockedWarn": "⚠️ 本次访问可能被 WAF 拦截或质询",
+  "wafInterstitialWarn": "⚠️ 页面疑似 WAF 拦截提示页(HTTP 200)"
 };
 
 const hasChrome = typeof chrome !== "undefined" && chrome.storage && chrome.tabs;
@@ -139,6 +140,7 @@ const DEMO_RECORD = {
   waf: { id: "aws-waf", name: "AWS WAF", header: "x-amzn-waf-action", value: "ALLOW", mitigated: null },
   statusCode: 200,
   wafBlocked: false,
+  interstitial: false,
   ping: { samples: [41, 38, 44], min: 38, median: 41, max: 44, at: 0 },
   pingError: null,
   hosts: {
@@ -539,6 +541,11 @@ function renderWaf(record) {
     let text = t("wafBlockedWarn");
     if (record.waf && record.waf.mitigated) text += " (" + record.waf.mitigated + ")";
     warn.textContent = text;
+    list.appendChild(warn);
+  } else if (record.interstitial) {
+    const warn = document.createElement("div");
+    warn.className = "hint warn";
+    warn.textContent = t("wafInterstitialWarn");
     list.appendChild(warn);
   }
 }

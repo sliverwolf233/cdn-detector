@@ -62,6 +62,7 @@
   "hostsTitle": { "message": "Domaines de la page" },
   "hostsMain": { "message": "document principal" },
   "offlineHint": { "message": "base hors ligne" },
+  "wafInterstitialWarn": { "message": "⚠️ La page ressemble à une page de blocage WAF (HTTP 200)" },
   "wafTitle": { "message": "Pare-feu WAF" },
   "wafNone": { "message": "Aucune empreinte WAF détectée" },
   "wafBlockedWarn": { "message": "⚠️ Cette visite a peut-être été bloquée ou mise au défi par un WAF" },

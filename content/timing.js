@@ -139,10 +139,24 @@
     }
   });
 
+  // WAF 拦截提示页启发式(应对 HTTP 200 型拦截):只读 DOM,不上传内容
+  function looksLikeWafInterstitial() {
+    try {
+      if (!document.body) return false;
+      var text = ((document.title || "") + " " + (document.body.innerText || "").slice(0, 2000)).toLowerCase();
+      var small = (document.body.innerText || "").length < 1500;
+      var fewNodes = document.body.querySelectorAll("*").length < 220;
+      var strong = /(cf-chl|checking your browser|请求被拦截|请求被防火墙|防火墙拦截|被waf|waf拦截|access denied|安全验证|请完成以下操作|ddos protection|safeline|雷池)/i;
+      var weak = /(防火墙|firewall|waf|安全狗|云锁|宝塔|寶塔|challenge|captcha)/i;
+      if (strong.test(text)) return true;
+      return !!(weak.test(text) && small && fewNodes);
+    } catch (e) { return false; }
+  }
+
   // 页面加载完成后上报时序;后台会在响应里带回检测摘要用于角标
   function report() {
     try {
-      var p = chrome.runtime.sendMessage({ type: "navTiming", timing: collect() });
+      var p = chrome.runtime.sendMessage({ type: "navTiming", timing: collect(), interstitial: looksLikeWafInterstitial() });
       if (p && p.then) {
         p.then(function (resp) {
           if (resp && resp.summary) { chipState.summary = resp.summary; syncChip(); }

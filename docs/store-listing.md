@@ -49,7 +49,7 @@ CDN 探测器 —— 一键查看任何网站背后的 CDN。
 
 【安全与报告】9 项安全响应头逐项 ✓✗;一键复制 Markdown 检测报告;查看全部响应头;页面域名分布(各子域各自命中的 CDN)。
 
-【WAF 防火墙】被动识别 AWS WAF、Cloudflare 质询、Imperva、F5 BIG-IP、Akamai、ModSecurity、宝塔 WAF、Reblaze;记录主文档状态码,403/406/429/503 且命中 WAF 时警示「本次访问可能被拦截/质询」。
+【WAF 防火墙】被动识别 AWS WAF、Cloudflare 质询、Imperva、F5 BIG-IP、Akamai、ModSecurity、宝塔 WAF、Reblaze;记录主文档状态码,403/406/429/503 且命中 WAF 时警示「本次访问可能被拦截/质询」;对 HTTP 200 型拦截,内容脚本以只读 DOM 启发式识别提示页。
 
 【Ping / RTT】
 以 HTTP 往返近似测量到该站点的延迟(预热后 3 次取中位数;浏览器扩展无法发送 ICMP,故为近似值,界面已如实标注)。
@@ -84,7 +84,7 @@ CDN Detector — see the CDN behind any website with one click.
 • Connection timing: a waterfall of the real main navigation — DNS lookup, TCP handshake, TLS handshake, time to first byte (TTFB) and content download — plus total, protocol (h2/h3/HTTP1.1), transfer size and compression.
 • Cache status: browser local cache hit (Navigation Timing) and CDN edge cache hit (X-Cache / CF-Cache-Status / Age).
 • Security & report: ✓/✗ for 9 security headers; one-click Markdown report copy; view all response headers; per-host CDN map of the page.
-• WAF detection (passive): AWS WAF, Cloudflare challenges, Imperva, F5 BIG-IP, Akamai, ModSecurity, BT WAF, Reblaze; the main-document status code is recorded and a warning is shown when 403/406/429/503 coincides with a WAF match.
+• WAF detection (passive): AWS WAF, Cloudflare challenges, Imperva, F5 BIG-IP, Akamai, ModSecurity, BT WAF, Reblaze; the main-document status code is recorded and a warning is shown when 403/406/429/503 coincides with a WAF match; for HTTP-200 blocks, a read-only DOM heuristic in the content script flags the interstitial page.
 • Ping / RTT: HTTP round-trip approximation to the site (median of 3 after warm-up; ICMP is unavailable to extensions, and the UI says so honestly).
 • Always-on without opening the popup: provider badge on the toolbar icon, an on-page chip (provider · region · latency), automatic detection and measurement after each navigation, and a per-site history of the last 50 checks.
 • SPA-friendly: tracks client-side route changes of single-page apps (React/Vue etc.), refreshing records and re-measuring latency as needed.
@@ -128,7 +128,7 @@ CDN Detector — see the CDN behind any website with one click.
 单页应用(React/Vue 等)的客户端路由切换不产生新的网络导航,需要 onHistoryStateUpdated / onReferenceFragmentUpdated 事件刷新检测记录并按需重测往返延迟(≥30 秒节流)。仅使用 URL 变更事件,不读取页面内容,不拦截导航。
 
 ### 主机权限理由
-CDN 检测必须对用户访问的每个 http/https 网站生效——这正是扩展的核心用途。同一访问还用于:(1) 经 manifest 声明注入只读内容脚本,采集浏览器 Navigation Timing 连接时序并在页面显示角标;(2) 在弹窗中显示当前标签页地址。已主动收窄:不申请 file://、ftp:// 等其他协议,不含 <all_urls>。
+CDN 检测必须对用户访问的每个 http/https 网站生效——这正是扩展的核心用途。同一访问还用于:(1) 经 manifest 声明注入只读内容脚本,采集浏览器 Navigation Timing 连接时序、在页面显示角标,并以只读 DOM 启发式识别 WAF 拦截提示页;(2) 在弹窗中显示当前标签页地址。已主动收窄:不申请 file://、ftp:// 等其他协议,不含 <all_urls>。
 
 ### 是否使用远程代码:否
 否。扩展的全部 JavaScript 与资源都打包在提交的包内,不引用任何外部脚本,不使用 eval 或远程托管模块。仅有的网络请求是:可选开启的 ip-api.com JSON 数据查询(纯数据、非代码,可在弹窗中关闭)与对用户正在浏览站点自身的延迟探测。

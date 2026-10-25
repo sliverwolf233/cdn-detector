@@ -62,6 +62,7 @@
   "hostsTitle": { "message": "页面域名分布" },
   "hostsMain": { "message": "主文档" },
   "offlineHint": { "message": "离线库" },
+  "wafInterstitialWarn": { "message": "⚠️ 页面疑似 WAF 拦截提示页(HTTP 200)" },
   "wafTitle": { "message": "WAF 防火墙" },
   "wafNone": { "message": "未检测到 WAF 特征" },
   "wafBlockedWarn": { "message": "⚠️ 本次访问可能被 WAF 拦截或质询" },

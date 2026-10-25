@@ -62,6 +62,7 @@
   "hostsTitle": { "message": "페이지 도메인 분포" },
   "hostsMain": { "message": "메인 문서" },
   "offlineHint": { "message": "오프라인 DB" },
+  "wafInterstitialWarn": { "message": "⚠️ 페이지가 WAF 차단 안내 페이지로 추정(HTTP 200)" },
   "wafTitle": { "message": "WAF 방화벽" },
   "wafNone": { "message": "WAF 징후가 감지되지 않음" },
   "wafBlockedWarn": { "message": "⚠️ 이번 접속이 WAF에 차단 또는 확인 요청을 받았을 수 있습니다" },

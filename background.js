@@ -205,11 +205,14 @@ function summarize(rec) {
   };
 }
 
-async function mergeTiming(tabId, timing) {
+async function mergeTiming(tabId, timing, interstitial) {
   if (!timing) return null;
   const record = await getRecord(tabId);
   if (!record) return null;
   record.timing = timing;
+  // HTTP 200 型 WAF 拦截:提示页启发式命中 → 已识别厂商时标记被拦,未识别时单独提示
+  record.interstitial = !!interstitial;
+  if (record.interstitial && record.waf) record.wafBlocked = true;
   await setRecord(tabId, record);
   await updateHistory(record);
   if ((await pingEnabled()) && !record.ping) {
@@ -277,7 +280,7 @@ chrome.webNavigation.onReferenceFragmentUpdated.addListener(function (details) {
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
   if (!msg || typeof msg !== "object") return;
   if (msg.type === "navTiming" && sender.tab && sender.tab.id) {
-    mergeTiming(sender.tab.id, msg.timing).then(function (rec) {
+    mergeTiming(sender.tab.id, msg.timing, msg.interstitial).then(function (rec) {
       sendResponse({ ok: true, summary: summarize(rec) });
     });
     return true;
