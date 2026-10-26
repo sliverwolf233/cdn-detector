@@ -87,7 +87,7 @@
       chip.id = "cdn-probe-chip";
       chip.style.cssText =
         "position:fixed;right:12px;bottom:12px;z-index:2147483646;" +
-        "background:rgba(14,21,24,0.82);color:#DEE3E6;" +
+        "background:rgba(14,21,24,0.72);color:#DEE3E6;backdrop-filter:blur(10px) saturate(140%);-webkit-backdrop-filter:blur(10px);" +
         "font:10px/1.4 'Segoe UI','Microsoft YaHei',system-ui,sans-serif;" +
         "padding:3px 9px;border-radius:999px;border:1px solid rgba(99,210,238,0.35);" +
         "opacity:0.55;transition:opacity 0.2s;cursor:default;";
